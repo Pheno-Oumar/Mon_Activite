@@ -1,0 +1,100 @@
+CREATE DATABASE application_recommandation;
+use application_recommandation;
+
+
+CREATE TABLE role(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	nom ENUM('CLIENT','ADMIN','AGENT_TERRAIN') UNIQUE NOT NULL
+);
+
+
+CREATE TABLE utilisateur(
+	id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    telephone VARCHAR(20) UNIQUE NOT NULL,
+    mdp VARCHAR(255) NOT NULL,
+    roleId INT NOT NULL,
+    CONSTRAINT fk_role FOREIGN KEY(roleId) REFERENCES role(id)
+  );
+ 
+  
+CREATE TABLE profil(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    utilisateurId INT UNIQUE NOT NULL,
+    disponibilite DOUBLE NOT NULL,
+    accesInternet BOOLEAN DEFAULT FALSE,
+    capital DOUBLE NOT NULL,
+    zone ENUM("VILLAGE","VILLE"),
+    CONSTRAINT fk_personne FOREIGN KEY(utilisateurId) REFERENCES utilisateur(id)
+);
+ 
+  
+CREATE TABLE competence(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) UNIQUE NOT NULL,
+    description VARCHAR(255)
+);
+
+
+CREATE TABLE profil_competence(
+   	profilId INT,
+    competenceId INT,
+    PRIMARY KEY (profilId, competenceId),
+    CONSTRAINT fk_pc_profil FOREIGN KEY(profilId) REFERENCES profil(id),
+    CONSTRAINT fk_pc_competence FOREIGN KEY(competenceId) REFERENCES competence(id)
+);
+
+
+CREATE TABLE categorie(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) UNIQUE NOT NULL,
+    description VARCHAR(255)
+);
+
+
+CREATE TABLE activite(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    utilisateurId INT UNIQUE NOT NULL,
+    nom VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    etapes TEXT NOT NULL,
+    risques TEXT,
+    revenuParMin DOUBLE NOT NULL,
+    revenuParMax DOUBLE NOT NULL,
+    disponibilite DOUBLE NOT NULL,
+    accesInternet BOOLEAN DEFAULT FALSE,
+    materiaux VARCHAR(80),
+    capital DOUBLE NOT NULL,
+    zone ENUM("VILLAGE","VILLE"),
+    CONSTRAINT fk_ac_utilisateur FOREIGN KEY(utilisateurId) REFERENCES utilisateur(id)
+);
+
+
+CREATE TABLE activite_competence(
+    activiteId INT,
+    competenceId INT,
+    PRIMARY KEY (activiteId, competenceId),
+    CONSTRAINT fk_ac_activite FOREIGN KEY(activiteId) REFERENCES activite(id),
+    CONSTRAINT fk_ac_competence FOREIGN KEY(competenceId) REFERENCES competence(id)
+);
+
+
+CREATE TABLE favori_activite(
+   	utilisateurId INT,
+    activiteId INT,
+    PRIMARY KEY (utilisateurId, activiteId),
+    CONSTRAINT fk_fav_personne FOREIGN KEY(utilisateurId) REFERENCES utilisateur(id),
+    CONSTRAINT fk_fav_activite FOREIGN KEY(activiteId) REFERENCES activite(id)
+);
+
+CREATE TABLE Recommandation (
+ activiteId INT,
+ profilId INT,
+ PRIMARY KEY (activiteId, profilId),
+ dateAjout DATETIME DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_fav_activite1 FOREIGN KEY(activiteId) REFERENCES activite(id),
+ CONSTRAINT fk_fav_profil FOREIGN KEY(profilId) REFERENCES profil(id)
+ );
+
+
