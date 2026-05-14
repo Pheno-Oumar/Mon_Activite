@@ -11,6 +11,7 @@ import java.util.List;
 import DAOInter.ActiviteDAO;
 import Enumeration.TypeZone;
 import InterfaceDB.Database;
+import Mapper.ActiviteMapper;
 import Model.Activite;
 
 public class ActiviteDAOImpl implements ActiviteDAO{
@@ -135,30 +136,10 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	            ResultSet rs = st.executeQuery(sql);
 
 	            while (rs.next()) {
-
-	                Activite a = new Activite();
-
-	                a.setId(rs.getInt("id"));
-	                a.setNom(rs.getString("nom"));
-	                a.setDescription(rs.getString("description"));
-	                a.setEtapes(rs.getString("etapes"));
-	                a.setRisques(rs.getString("risques"));
-	                a.setRevenueMin(rs.getDouble("revenuParMin"));
-	                a.setRevenueMax(rs.getDouble("revenuParMax"));
-	                a.setDisponibilite(rs.getDouble("disponibilite"));
-	                a.setAccesInternet(rs.getBoolean("accesInternet"));
-	                a.setMateriaux(rs.getString("materiaux"));
-	                a.setCapital(rs.getDouble("capital"));
-
-	                //resulteset retourne un chaine de caractere string 
-	                String zone = rs.getString("zone");
-	                if (zone != null) {
-	                    a.setZone(TypeZone.valueOf(zone)); //fait la conversion  en typezone
-	                }
-
-
+	                Activite a = ActiviteMapper.map(rs);
 	                liste.add(a);
 	            }
+
 
 	        } catch (SQLException e) {
 	            System.out.println("Erreur liste: " + e.getMessage());
@@ -176,33 +157,16 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	        	Connection conn = db.connexion();
 
 	            PreparedStatement ps = conn.prepareStatement(sql);
+	            
 	            ps.setInt(1, id);
 
 	            ResultSet rs = ps.executeQuery();
 
+
 	            if (rs.next()) {
-
-	                Activite a = new Activite();
-
-	                a.setId(rs.getInt("id"));
-	                a.setNom(rs.getString("nom"));
-	                a.setDescription(rs.getString("description"));
-	                a.setEtapes(rs.getString("etapes"));
-	                a.setRisques(rs.getString("risques"));
-	                a.setRevenueMin(rs.getDouble("revenuParMin"));
-	                a.setRevenueMax(rs.getDouble("revenuParMax"));
-	                a.setDisponibilite(rs.getDouble("disponibilite"));
-	                a.setAccesInternet(rs.getBoolean("accesInternet"));
-	                a.setMateriaux(rs.getString("materiaux"));
-	                a.setCapital(rs.getDouble("capital"));
-
-	                String zone = rs.getString("zone");
-	                if (zone != null) {
-	                    a.setZone(TypeZone.valueOf(zone));
-	                }
-
-	               return a;
+	                return ActiviteMapper.map(rs);
 	            }
+
 
 	        } catch (SQLException e) {
 	            System.out.println("Erreur lecture: " + e.getMessage());
