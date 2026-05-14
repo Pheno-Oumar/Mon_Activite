@@ -20,10 +20,11 @@ public class Profil {
 	}
 	
 	
-	public Profil( int id, double disponibilite, double capital, TypeZone zone, List<Competence> competences, Utilisateur utilisateur ) {
+	public Profil( int id, double disponibilite, boolean accessInternet, double capital, TypeZone zone, List<Competence> competences, Utilisateur utilisateur ) {
 		 
 		this.id = id;
 		this.disponibilite = disponibilite ;
+		this.accessInternet = accessInternet;
 		this.capital = capital;
 		this.zone = zone;
 		this.competences = competences;
