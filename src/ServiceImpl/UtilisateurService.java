@@ -5,6 +5,7 @@ import java.util.List;
 
 import DAOInter.UtilisateurDAO;
 import Enumeration.TypeRole;
+
 import Model.Role;
 import Model.Utilisateur;
 import ServiceInter.IUtilisateurService;
@@ -13,7 +14,6 @@ public class UtilisateurService implements IUtilisateurService{
 
 	
 	private final UtilisateurDAO utilisateurDAO;
-	
 	public UtilisateurService(UtilisateurDAO utilisateurDAO) {
 		this.utilisateurDAO = utilisateurDAO;
 	}
@@ -126,5 +126,6 @@ public class UtilisateurService implements IUtilisateurService{
 		// TODO Auto-generated method stub
 		 return utilisateurDAO.trouveTous();
 	}
+
 
 }
