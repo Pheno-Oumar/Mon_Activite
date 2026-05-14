@@ -2,6 +2,8 @@ package Main;
 
 import ConnexionBD.MySQL;
 import DAOImpl.RoleDAOImpl;
+import InterfaceDB.Database;
+import DAOInter.RoleDAO;
 
 public class Main {
 
@@ -11,8 +13,8 @@ public class Main {
 	}
 
 	private static void initt() {
-		MySQL mysql = new MySQL();
-		RoleDAOImpl roleDAO = new RoleDAOImpl(mysql);
+		Database mysql = new MySQL();
+		RoleDAO roleDAO = new RoleDAOImpl(mysql);
 		Initialiseur init = new Initialiseur(roleDAO);
 		init.init();
 	}
