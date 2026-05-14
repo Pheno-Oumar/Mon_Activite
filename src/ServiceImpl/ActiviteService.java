@@ -5,6 +5,7 @@ import java.util.List;
 import DAOInter.ActiviteDAO;
 import Model.Activite;
 
+
 public class ActiviteService {
 	
 	private ActiviteDAO activiteDAO;
