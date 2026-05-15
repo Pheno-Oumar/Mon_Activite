@@ -12,7 +12,7 @@ public class ProfilAgentConsole {
 
     public void afficher() {
 
-        System.out.println("\n===== PROFIL UTILISATEUR =====");
+        System.out.println("===== PROFIL UTILISATEUR =====");
 
         System.out.println("ID : " + utilisateur.getId());
         System.out.println("Nom : " + utilisateur.getNom());

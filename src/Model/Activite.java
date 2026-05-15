@@ -8,6 +8,7 @@ import Enumeration.TypeZone;
 public class Activite {
 
 	private int id;
+	//private Utilisateur utilisateur;
 	private String nom;
 	private String description;
 	private double disponibilite;
@@ -40,6 +41,16 @@ public class Activite {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	
+
+//	public Utilisateur getUtilisateur() {
+//		return utilisateur;
+//	}
+//
+//	public void setUtilisateur(Utilisateur utiisateur) {
+//		this.utilisateur = utiisateur;
+//	}
 
 	public String getNom() {
 		return nom;

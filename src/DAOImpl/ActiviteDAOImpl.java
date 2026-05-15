@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import DAOInter.ActiviteCompetenceDAO;
 import DAOInter.ActiviteDAO;
+import DAOInter.CompetenceInterface;
 import Enumeration.TypeZone;
 import InterfaceDB.Database;
 import Mapper.ActiviteMapper;
@@ -16,7 +18,8 @@ import Model.Activite;
 
 public class ActiviteDAOImpl implements ActiviteDAO{
 
-	
+	//private CompetenceInterface comp;
+	private ActiviteCompetenceDAO activiteCompetence;
 	 private Database db;
 
 	  
@@ -31,7 +34,9 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	  public void ajouter(Activite a) {
 
 	        String sql = "INSERT INTO activite (nom, description, etapes, risques, revenuParMin, revenuParMax, "
-	                   + "disponibilite, accesInternet, materiaux, capital, zone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	                   + "disponibilite, accesInternet, materiaux, capital, zone) VALUES (?, ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        
+	        //comp.trouverTousCompetences();
 
 	        try {
 	        	Connection conn = db.connexion();
@@ -39,6 +44,7 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	            PreparedStatement ps = conn.prepareStatement(sql);
 
 	            ps.setString(1, a.getNom());
+	           // ps.setInt(2, a.getUtilisateur().getId());
 	            ps.setString(2, a.getDescription());
 	            ps.setString(3, a.getEtapes());
 	            ps.setString(4, a.getRisques());
@@ -51,7 +57,8 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	            ps.setString(11, a.getZone().name()); //permet de transformer typezone en chaine de caratere et l'envoyer dans la base de donnees
 
 	            ps.executeUpdate();
-
+	            
+	            activiteCompetence.creer(a);
 
 
 	            System.out.println("Activité ajoutée avec succès !");
@@ -69,6 +76,7 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	        String sql = "UPDATE activite SET nom=?, description=?, etapes=?, risques=?, "
 	                   + "revenuParMin=?, revenuParMax=?, disponibilite=?, accesInternet=?, materiaux=?, capital=?, zone=? "
 	                   + "WHERE id=?";
+	        
 
 	        try {
 	        	Connection conn = db.connexion();
@@ -90,6 +98,7 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 
 	            ps.executeUpdate();
 
+	            
 	         
 	            System.out.println("Activité modifiée !");
 
@@ -137,8 +146,12 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 
 	            while (rs.next()) {
 	                Activite a = ActiviteMapper.map(rs);
+	                a.setCompetences(activiteCompetence.lire(a));
 	                liste.add(a);
 	            }
+	            
+	           
+
 
 
 	        } catch (SQLException e) {
@@ -166,7 +179,7 @@ public class ActiviteDAOImpl implements ActiviteDAO{
 	            if (rs.next()) {
 	                return ActiviteMapper.map(rs);
 	            }
-
+ 
 
 	        } catch (SQLException e) {
 	            System.out.println("Erreur lecture: " + e.getMessage());

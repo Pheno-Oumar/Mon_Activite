@@ -1,12 +1,12 @@
 package Main;
 
 import ConnexionBD.MySQL;
+import Console.AgentTerrainConsole;
 import Console.AuthConsole;
 import DAOImpl.ProfilDAO;
 import DAOImpl.RoleDAOImpl;
 import DAOImpl.UtilisateurDAOImpl;
 import InterfaceDB.Database;
-import Model.Utilisateur;
 import ServiceImpl.ProfilServiceImpl;
 import ServiceImpl.UtilisateurService;
 import ServiceInter.ProfilServiceInt;
@@ -15,6 +15,10 @@ public class Main {
     
     public static void main(String[] args) {
         initt();
+        
+//        AgentTerrainConsole console = new AgentTerrainConsole();
+//        console.afficherMenu();
+	
         
         Database db = new MySQL();
         
@@ -25,6 +29,8 @@ public class Main {
         // Services
         UtilisateurService utilisateurService = new UtilisateurService(utilisateurDAO);
         ProfilServiceInt profilService = new ProfilServiceImpl(profilDAO);
+
+     
 
         // Console auth
         AuthConsole authConsole = new AuthConsole(utilisateurService, profilService);
