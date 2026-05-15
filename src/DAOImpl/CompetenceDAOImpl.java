@@ -180,5 +180,3 @@ public class CompetenceDAOImpl implements CompetenceInterface {
         return Optional.empty();
     }
 }
-service.txt
-Affichage de service.txt en cours...
