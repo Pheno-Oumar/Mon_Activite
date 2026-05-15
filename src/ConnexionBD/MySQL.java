@@ -15,7 +15,7 @@ public class MySQL implements Database {
 
 		String url = "jdbc:mysql://localhost:3306/application_recommandation";
 		String username = "root";
-		String passwd = "2309";
+		String passwd = "AbdoulayeDiallo@223";
 
 		try {
 			conn = DriverManager.getConnection(url, username, passwd);
