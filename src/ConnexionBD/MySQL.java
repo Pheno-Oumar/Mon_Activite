@@ -16,6 +16,7 @@ public class MySQL implements Database {
 		String url = "jdbc:mysql://localhost:3306/application_recommandation";
 		String username = "root";
 		String passwd = "AbdoulayeDiallo@223";
+
 		try {
 			conn = DriverManager.getConnection(url, username, passwd);
 		} catch (SQLException e) {
@@ -35,7 +36,16 @@ public class MySQL implements Database {
 			System.out.println("Erreur: " + e.getMessage());
 		}
 	}
-
-
-
+  
+	public static void main(String[] args) {
+		String url = "jdbc:mysql://localhost:3306/application_recommandation";
+		String username = "root";
+		String passwd = "2309";
+		try {
+			DriverManager.getConnection(url, username, passwd);
+			System.out.println("Connexion reussi.");
+		} catch (SQLException e) {
+			System.out.println("Erreur: " + e.getMessage());
+		}
+	}
 }

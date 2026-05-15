@@ -19,9 +19,7 @@ public class CompetenceDAOImpl implements CompetenceInterface {
         this.db = db;
     }
 
-    /**
-     * Ajouter une compétence dans la base de données
-     */
+    
     @Override
     public void creerCompetence(Competence comp) {
 
@@ -52,9 +50,7 @@ public class CompetenceDAOImpl implements CompetenceInterface {
         }
     }
 
-    /**
-     * Modifier une compétence existante
-     */
+ 
     @Override
     public void modifierCompetence(Competence comp) {
 
@@ -82,9 +78,7 @@ public class CompetenceDAOImpl implements CompetenceInterface {
         }
     }
 
-    /**
-     * Supprimer une compétence grâce à son identifiant
-     */
+    
     @Override
     public void supprimerCompetence(int id) {
 
@@ -109,9 +103,7 @@ public class CompetenceDAOImpl implements CompetenceInterface {
         }
     }
 
-    /**
-     * Retourner toutes les compétences
-     */
+     
     @Override
     public List<Competence> trouverTousCompetences() {
 
@@ -149,9 +141,7 @@ public class CompetenceDAOImpl implements CompetenceInterface {
         return liste;
     }
 
-    /**
-     * Rechercher une compétence par son identifiant
-     */
+     
     @Override
     public Optional<Competence> trouverCompetenceParId(int id) {
 

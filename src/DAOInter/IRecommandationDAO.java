@@ -10,7 +10,5 @@ public interface IRecommandationDAO {
     void ajouter(Recommandation r);
 
     void supprimer(int id);
-
-
     
 }
