@@ -1,12 +1,17 @@
 package Main;
 
 import ConnexionBD.MySQL;
+import Console.AgentTerrainConsole;
 import DAOImpl.RoleDAOImpl;
 
 public class Main {
 
 	public static void main(String[] pheno) {
 		initt();
+		
+//		 AgentTerrainConsole console = new AgentTerrainConsole();
+//
+//	        console.afficherMenu();
 		
 	}
 
