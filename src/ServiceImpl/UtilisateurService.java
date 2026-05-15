@@ -41,7 +41,7 @@ public class UtilisateurService implements IUtilisateurService {
         // Rôle par défaut = CLIENT
         if (utilisateur.getRole() == null) {
             // Assure-toi que l'ID 7 correspond bien à CLIENT dans ta table 'role'
-            utilisateur.setRole(new Role(7, TypeRole.CLIENT));
+            utilisateur.setRole(new Role(1, TypeRole.CLIENT));
         }
 
         utilisateurDAO.creer(utilisateur);

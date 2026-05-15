@@ -24,7 +24,7 @@ public class AuthConsole {
 	public void lancer() {
 		Utilisateur utilisateurConnecte = null;
 		while (utilisateurConnecte == null) {
-			System.out.println("\\n===== AUTHENTIFICATION =====");
+			System.out.println("===== AUTHENTIFICATION =====");
 			System.out.println("1. Inscription");
 			System.out.println("2. Connexion");
 			System.out.println("0. Quitter");
@@ -108,7 +108,7 @@ public class AuthConsole {
 
 		// ====================== RÔLE CLIENT PAR DÉFAUT ======================
 		Role roleClient = new Role();
-		roleClient.setId(7); // ← Change cet ID selon ta base
+		roleClient.setId(1); // ← Change cet ID selon ta base
 		roleClient.setNom(TypeRole.CLIENT);
 
 		utilisateur.setRole(roleClient);

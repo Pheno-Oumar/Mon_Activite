@@ -22,24 +22,15 @@ public class ModifierMotPasseConsole {
 
     public void afficher() {
 
-        System.out.println("\n===== MODIFIER MOT DE PASSE =====");
-
+        System.out.println("===== MODIFIER MOT DE PASSE =====");
+        
         System.out.print("Ancien mot de passe : ");
         String ancien = scanner.nextLine();
-
-        if (!utilisateur.getMdp().equals(ancien)) {
-
-            System.out.println("Mot de passe incorrect !");
-            return;
-        }
 
         System.out.print("Nouveau mot de passe : ");
         String nouveau = scanner.nextLine();
 
-//        utilisateur.setMdp(nouveau);
 
-//        utilisateurService.modifierMotPasse(utilisateur);
-
-        System.out.println("Mot de passe modifie avec succes !");
+//        utilisateurService.modifierMotDePasse(utilisateur, ancien, nouveau);
     }
 }

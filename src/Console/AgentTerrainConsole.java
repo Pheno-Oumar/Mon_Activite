@@ -2,10 +2,14 @@ package Console;
 
 import java.util.Scanner;
 
+import ConnexionBD.MySQL;
+import DAOImpl.CompetenceDAOImpl;
 import Model.Utilisateur;
+
 
 public class AgentTerrainConsole extends Utilisateur {
 
+	private Utilisateur utilisateur;
 	private Scanner scanner;
 
 	public AgentTerrainConsole() {
@@ -37,7 +41,7 @@ public class AgentTerrainConsole extends Utilisateur {
 	            switch (choix) {
 
 	                case 1:
-	                    new AjouterActiviteConsole().afficher();
+	                    new AjouterActiviteConsole(new CompetenceDAOImpl(new MySQL())).afficher();
 	                    break;
 
 	                case 2:
@@ -53,9 +57,9 @@ public class AgentTerrainConsole extends Utilisateur {
 	                    new ListerActiviteConsole().afficher();
 	                    break;
 
-//	                case 5:
-//	                    new ProfilAgentConsole().afficher();
-//	                    break;
+	                case 5:
+	                    new ProfilAgentConsole(utilisateur).afficher();
+	                    break;
 
 //	                case 6:
 //	                    new ListeUtilisateurConsole().afficher();
