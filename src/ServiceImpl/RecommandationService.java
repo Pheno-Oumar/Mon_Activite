@@ -1,80 +1,123 @@
 package ServiceImpl;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-import DAOImpl.RecommandationDAO;
+import DAOImpl.ProfilDAO;
+import DAOInter.ActiviteDAO;
+import DAOInter.IRecommandationDAO;
+import Model.Activite;
+import Model.Competence;
+import Model.Profil;
 import Model.Recommandation;
 
 public class RecommandationService {
 
     // Dépendance vers la couche DAO
-    private final RecommandationDAO recommandationDAO;
-
+    private final IRecommandationDAO recommandationDAO;
+    
+    private final ActiviteDAO activiteDAO;
+    private final ProfilDAO profilDAO;
+    
     /**
      * Constructeur.
      * Reçoit le DAO par injection de dépendance.
      */
-    public RecommandationService(RecommandationDAO recommandationDAO) {
+    public RecommandationService(IRecommandationDAO recommandationDAO,ActiviteDAO activiteDAO,ProfilDAO profilDAO) {
 
         if (recommandationDAO == null) {
             throw new IllegalArgumentException("Le DAO est obligatoire.");
         }
 
         this.recommandationDAO = recommandationDAO;
+        this.activiteDAO = activiteDAO;
+        this.profilDAO = profilDAO;
     }
 
-    /**
-     * Retourne toutes les recommandations d'un profil.
-     *
-     * @param profilId identifiant du profil
-     * @return liste des recommandations
-     */
-    public List<Recommandation> afficher(int profilId) {
+ // =========================
+ // GENERER RECOMMANDATIONS
+ // =========================
+ public List<Recommandation> genererRecommandations(int profilId) {
 
-        if (profilId <= 0) {
-            throw new IllegalArgumentException("Profil invalide.");
-        }
+     if (profilId <= 0) {
+         throw new IllegalArgumentException("Profil invalide");
+     }
 
-        return recommandationDAO.afficher(profilId);
-    }
+     // 1. Charger le profil
+     Profil profil = profilDAO.trouverParId(profilId);
 
-    /**
-     * Ajoute une nouvelle recommandation.
-     *
-     * @param recommandation objet à enregistrer
-     */
-    public void ajouter(Recommandation recommandation) {
+     if (profil == null) {
+         throw new IllegalArgumentException("Profil introuvable.");
+     }
 
-        if (recommandation == null) {
-            throw new IllegalArgumentException("La recommandation est obligatoire.");
-        }
+     // 2. Charger toutes les activités
+     List<Activite> activites = activiteDAO.tousList();
 
-        if (recommandation.getActivite() == null) {
-            throw new IllegalArgumentException("L'activité est obligatoire.");
-        }
+     // 3. Liste des recommandations générées
+     List<Recommandation> resultats = new ArrayList<>();
 
-        if (recommandation.getProfil() == null) {
-            throw new IllegalArgumentException("Le profil est obligatoire.");
-        }
+     // 4. Parcourir toutes les activités
+     for (Activite activite : activites) {
 
-        if (recommandation.getDateAjout() == null) {
-            throw new IllegalArgumentException("La date d'ajout est obligatoire.");
-        }
+         // 5. Vérifier la compatibilité :
+         //    - même zone (Ville / Village)
+         //    - accès Internet compatible
+         //    - au moins une compétence commune
+         if (estCompatible(profil, activite)) {
 
-        recommandationDAO.ajouter(recommandation);
-    }
+             // 6. Créer la recommandation
+             Recommandation recommandation = new Recommandation();
+             recommandation.setProfil(profil);
+             recommandation.setActivite(activite);
+             recommandation.setDateAjout(new Date(profilId));
 
-    /**
-     * Supprime une recommandation par son identifiant.
-     *
-     * @param id identifiant de la recommandation
-     */
-    public void supprimer(int id) {
+             // 7. Sauvegarder en base de données
+             recommandationDAO.ajouter(recommandation);
 
-        if (id <= 0) {
-            throw new IllegalArgumentException("ID invalide.");
-        }
+             // 8. Ajouter à la liste des résultats
+             resultats.add(recommandation);
+         }
+     }
 
-        recommandationDAO.supprimer(id);
-    }
+     // 9. Retourner les recommandations générées
+     return resultats;
+ }
+
+
+ // =========================
+ // VERIFIER LA COMPATIBILITE
+ // =========================
+ private boolean estCompatible(Profil profil, Activite activite) {
+
+     // 1. Même zone (Ville / Village)
+     if (profil.getZone() != activite.getZone()) {
+         return false;
+     }
+
+     // 2. Si l'activité nécessite Internet,
+     //    le profil doit avoir accès à Internet
+     if (activite.isAccesInternet() && !profil.isAccessInternet()) {
+         return false;
+     }
+
+     // 3. Au moins une compétence commune
+     if (profil.getCompetences() == null
+             || activite.getCompetences() == null) {
+         return false;
+     }
+
+     for (Competence competenceProfil : profil.getCompetences()) {
+         for (Competence competenceActivite : activite.getCompetences()) {
+
+             if (competenceProfil.getNom()
+                     .equalsIgnoreCase(competenceActivite.getNom())) {
+                 return true;
+             }
+         }
+     }
+
+     // Aucune compétence commune trouvée
+     return false;
+ }
 }
