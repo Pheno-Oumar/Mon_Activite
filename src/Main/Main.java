@@ -1,15 +1,16 @@
 package Main;
 
 import ConnexionBD.MySQL;
+import DAOInter.*;
 import Console.AgentTerrainConsole;
 import Console.AuthConsole;
 import DAOImpl.ProfilDAO;
 import DAOImpl.RoleDAOImpl;
 import DAOImpl.UtilisateurDAOImpl;
 import InterfaceDB.Database;
-import ServiceImpl.ProfilServiceImpl;
-import ServiceImpl.UtilisateurService;
+import ServiceInter.IUtilisateurService;
 import ServiceInter.ProfilServiceInt;
+import ServiceImpl.*;
 
 public class Main {
     
@@ -24,10 +25,11 @@ public class Main {
         
         // DAO
         UtilisateurDAOImpl utilisateurDAO = new UtilisateurDAOImpl(db);
+        RoleDAO roleDAO = new RoleDAOImpl(db);
         ProfilDAO profilDAO = new ProfilDAO(db);
 
         // Services
-        UtilisateurService utilisateurService = new UtilisateurService(utilisateurDAO);
+        UtilisateurService utilisateurService = new ClientServiceImpl(utilisateurDAO,roleDAO);
         ProfilServiceInt profilService = new ProfilServiceImpl(profilDAO);
 
      
@@ -44,7 +46,9 @@ public class Main {
     private static void initt() {
         MySQL mysql = new MySQL();
         RoleDAOImpl roleDAO = new RoleDAOImpl(mysql);
-        Initialiseur init = new Initialiseur(roleDAO);
+        UtilisateurDAO utilisateurDAO = new UtilisateurDAOImpl(mysql);
+        IUtilisateurService utilisateurService = new AdminServiceImpl(utilisateurDAO, roleDAO);
+        Initialiseur init = new Initialiseur(roleDAO,utilisateurService);
         init.init();
     }
 }

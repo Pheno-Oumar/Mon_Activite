@@ -22,4 +22,5 @@ public interface IUtilisateurService {
 
 	    // afficher tous les utilisateurs
 	    List<Utilisateur> afficherTousUtilisateurs();
+	    Utilisateur trouverParTelephone(String telephone);
 }

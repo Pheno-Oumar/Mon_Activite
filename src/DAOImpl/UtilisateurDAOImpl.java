@@ -34,6 +34,7 @@ public class UtilisateurDAOImpl	 implements UtilisateurDAO {
             pr.setString(2, utilisateur.getPrenom());
             pr.setString(3, utilisateur.getTelephone());
             pr.setString(4, utilisateur.getMdp());
+            
             pr.setInt(5, utilisateur.getRole().getId());
 
             int rows = pr.executeUpdate();
@@ -76,6 +77,7 @@ public class UtilisateurDAOImpl	 implements UtilisateurDAO {
     
 
     // Méthode supplémentaire pour la connexion
+    @Override
     public Utilisateur trouverParTelephone(String telephone) {
     	String sql = """
     	        SELECT u.*, r.nom as role_nom 
