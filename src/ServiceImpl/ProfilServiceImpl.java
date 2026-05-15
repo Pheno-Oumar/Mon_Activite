@@ -1,4 +1,4 @@
-package service.impl;
+package ServiceImpl;
 
 import DAOImpl.ProfilDAO;
 import Model.Profil;
