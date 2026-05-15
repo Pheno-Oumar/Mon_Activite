@@ -1,110 +1,82 @@
 package ServiceImpl;
 
-
 import java.util.List;
 
+import DAOInter.RoleDAO;
 import DAOInter.UtilisateurDAO;
 import Enumeration.TypeRole;
-
 import Model.Role;
 import Model.Utilisateur;
 import ServiceInter.IUtilisateurService;
 
-public class UtilisateurService implements IUtilisateurService{
+public abstract class UtilisateurService implements IUtilisateurService {
 
+	protected final UtilisateurDAO utilisateurDAO;
+
+	protected final RoleDAO roleDAO;
 	
-	private final UtilisateurDAO utilisateurDAO;
-	public UtilisateurService(UtilisateurDAO utilisateurDAO) {
+	public UtilisateurService(UtilisateurDAO utilisateurDAO,RoleDAO roleDAO) {
 		this.utilisateurDAO = utilisateurDAO;
+		this.roleDAO = roleDAO;
 	}
-	
+
 	@Override
-	public void inscription(Utilisateur utilisateur) {
-		// TODO Auto-generated method stub
-	if(utilisateur.getNom() == null || utilisateur.getNom().isEmpty()) {
-		 System.out.println("Nom obligatoire");
-		 return;
-		
-	}
-	
-	if(utilisateur.getTelephone() == null || utilisateur.getTelephone().isEmpty() ) {
-		 System.out.println("Téléphone obligatoire");
-		 return;
-	}
-	
-	if(utilisateur.getMdp() == null || utilisateur.getMdp().length() < 4 ) {
-		 System.out.println("Mot de passe trop court");
-         return;
-	}
-	
-	Utilisateur existant = utilisateurDAO.trouverParTelephone(utilisateur.getTelephone());
-	if(existant !=null) {
-		System.out.println("Ce numero existe deja");
-		return;
-	}
-	
-	
-	  // rôle par défaut = CLIENT
-	
-	if(utilisateur.getRole() == null) {
-		utilisateur.setRole(new Role(1, TypeRole.CLIENT));
-	
-	}
-	
-	utilisateurDAO.creer(utilisateur);
-	System.out.println("Inscription réussie !");
-}
+	public abstract void inscription(Utilisateur utilisateur);
+
 	@Override
 	public Utilisateur connexion(String telephone, String mdp) {
-		// TODO Auto-generated method stub
-		
-		Utilisateur u = utilisateurDAO.trouverParTelephone(telephone);
-		if(u ==null){
-			System.out.println("Utilisateur Introuvable");
+		if (telephone == null || mdp == null)
+			return null;
+
+		// Nettoyage de l'entrée utilisateur
+		String telNettoye = telephone.trim();
+
+		Utilisateur u = utilisateurDAO.trouverParTelephone(telNettoye);
+
+		if (u == null) {
+			// Si on arrive ici avec l'erreur "role_id not found",
+			// c'est le DAO qui a crashé avant de renvoyer l'utilisateur.
 			return null;
 		}
-		if(!u.getMdp().equals(mdp)) {
+
+		if (!u.getMdp().equals(mdp)) {
 			System.out.println("Mot de passe incorrect");
-            return null;
+			return null;
 		}
-		
-		// Message selon rôle
-		
-		if(u.getRole() !=null) {
-			 switch (u.getRole().getNom()) {
 
-             case ADMIN:
-                 System.out.println("Bienvenue Admin");
-                 break;
+		Role role = u.getRole();
+		if (role == null || role.getNom() == null) {
+			System.out.println("⚠️ Utilisateur connecté mais rôle non chargé (vérifiez le JOIN dans le DAO)");
+			return u;
+		}
 
-             case AGENT_TERRAIN:
-                 System.out.println("Bienvenue Agent Terrain");
-                 break;
-
-             case CLIENT:
-                 System.out.println("Bienvenue "+u.getPrenom()+" "+u.getNom());
-                 break;
-         }
-     }
+		// Accueil personnalisé
+		System.out.println("\n----------------------------");
+		switch (role.getNom()) {
+		case ADMIN -> System.out.println("Espace Administrateur : Bienvenue " + u.getPrenom());
+		case AGENT_TERRAIN -> System.out.println("Espace Agent : Session ouverte pour " + u.getPrenom());
+		case CLIENT -> System.out.println("Bienvenue " + u.getPrenom() + " " + u.getNom());
+		default -> System.out.println("Bienvenue " + u.getNom());
+		}
+		System.out.println("----------------------------\n");
 
 		return u;
 	}
 
+	// Les autres méthodes restent inchangées
 	@Override
 	public void modifierUtilisateur(Utilisateur utilisateur) {
-		// TODO Auto-generated method stub
 		Utilisateur existant = utilisateurDAO.trouverParId(utilisateur.getId());
-		if(existant == null) {
+		if (existant == null) {
 			System.out.println("Utilisateur introuvable");
 			return;
 		}
-	utilisateurDAO.modifier(utilisateur);
-	 System.out.println("Utilisateur modifié avec succès");
+		utilisateurDAO.modifier(utilisateur);
+		System.out.println("Utilisateur modifié avec succès");
 	}
 
 	@Override
 	public void supprimerUtilisateur(int id) {
-		// TODO Auto-generated method stub
 		Utilisateur existant = utilisateurDAO.trouverParId(id);
 		if (existant == null) {
 			System.out.println("Utilisateur introuvable");
@@ -116,16 +88,16 @@ public class UtilisateurService implements IUtilisateurService{
 
 	@Override
 	public Utilisateur rechercherParId(int id) {
-		// TODO Auto-generated method stub
 		return utilisateurDAO.trouverParId(id);
 	}
 
 	@Override
-	
 	public List<Utilisateur> afficherTousUtilisateurs() {
-		// TODO Auto-generated method stub
-		 return utilisateurDAO.trouveTous();
+		return utilisateurDAO.trouveTous();
 	}
-
-
+	
+	@Override 
+	public Utilisateur trouverParTelephone(String telephone){
+		return this.utilisateurDAO.trouverParTelephone(telephone);
+	}
 }

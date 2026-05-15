@@ -34,6 +34,7 @@ public class UtilisateurDAOImpl	 implements UtilisateurDAO {
             pr.setString(2, utilisateur.getPrenom());
             pr.setString(3, utilisateur.getTelephone());
             pr.setString(4, utilisateur.getMdp());
+            
             pr.setInt(5, utilisateur.getRole().getId());
 
             int rows = pr.executeUpdate();
@@ -76,8 +77,14 @@ public class UtilisateurDAOImpl	 implements UtilisateurDAO {
     
 
     // Méthode supplémentaire pour la connexion
+    @Override
     public Utilisateur trouverParTelephone(String telephone) {
-        String sql = "SELECT * FROM utilisateur WHERE telephone = ?";
+    	String sql = """
+    	        SELECT u.*, r.nom as role_nom 
+            FROM utilisateur u 
+            LEFT JOIN role r ON u.roleId = r.id 
+    	        WHERE u.telephone = ?
+    	        """;
 
         try (
             Connection conn = db.connexion();
@@ -90,6 +97,7 @@ public class UtilisateurDAOImpl	 implements UtilisateurDAO {
 
             if (rs.next()) {
                 return mapResultSetToUtilisateur(rs);
+                
             }
 
         } catch (SQLException e) {
@@ -181,40 +189,34 @@ public class UtilisateurDAOImpl	 implements UtilisateurDAO {
     }
 
     private Utilisateur mapResultSetToUtilisateur(ResultSet rs) throws SQLException {
+        Utilisateur u = new Utilisateur();
+        u.setId(rs.getInt("id"));
+        u.setNom(rs.getString("nom"));
+        u.setPrenom(rs.getString("prenom"));
+        u.setTelephone(rs.getString("telephone"));
+        u.setMdp(rs.getString("mdp"));
 
-        Utilisateur utilisateur = new Utilisateur();
+        // === CORRECTION ICI : "roleId" au lieu de "role_id" ===
+        // On utilise roleId car c'est le nom de la colonne dans ta table 'utilisateur'
+        // ou l'alias que tu as défini dans ta requête SQL (r.id as roleId)
+        int roleId = rs.getInt("roleId"); 
 
-        utilisateur.setId(rs.getInt("id"));
-        utilisateur.setNom(rs.getString("nom"));
-        utilisateur.setPrenom(rs.getString("prenom"));
-        utilisateur.setTelephone(rs.getString("telephone"));
-        utilisateur.setMdp(rs.getString("mdp"));
-
-        // récupération du rôle
-        int roleId = rs.getInt("roleId");
-
-        Role role = new Role();
-        role.setId(roleId);
-
-        switch (roleId) {
-            case 1:
-                role.setNom(TypeRole.CLIENT);
-                break;
-
-            case 2:
-                role.setNom(TypeRole.AGENT_TERRAIN);
-                break;
-
-            case 3:
-                role.setNom(TypeRole.ADMIN);
-                break;
-
-            default:
-                System.out.println("Role inconnu");
+        if (!rs.wasNull()) {
+            String roleNomStr = rs.getString("role_nom");
+            TypeRole typeRole = null;
+            
+            if (roleNomStr != null) {
+                try {
+                    typeRole = TypeRole.valueOf(roleNomStr.trim().toUpperCase());
+                } catch (Exception e) {
+                    System.out.println("Erreur conversion rôle: " + roleNomStr);
+                }
+            }
+            
+            Role role = new Role(roleId, typeRole);
+            u.setRole(role);
         }
 
-        utilisateur.setRole(role);
-
-        return utilisateur;
+        return u;
     }
 }
