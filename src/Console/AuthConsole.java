@@ -2,6 +2,7 @@ package Console;
 
 import java.util.Scanner;
 
+import ConnexionBD.MySQL;
 import Enumeration.TypeRole;
 import Model.Role;
 import Model.Utilisateur;
@@ -162,9 +163,9 @@ public class AuthConsole {
 			new ClientConsole(scanner, profilService).menuClient(utilisateur);
 			break;
 
-		/*
-		 * case ADMIN: // new AdminConsole(...).afficherMenu(); break;
-		 * 
+		
+		  case ADMIN:  new AdminConsole(new MySQL()).menuAdmin(); break;
+			  /* * 
 		 * case AGENT_TERRAIN: // new AgentTerrainConsole(...).afficherMenu(); break;
 		 */
 
