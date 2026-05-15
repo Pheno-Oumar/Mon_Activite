@@ -1,6 +1,6 @@
 package Enumeration;
 
 public enum TypeZone {
-	Ville,
-	Village
+	VILLE,
+	VILLAGE
 }
